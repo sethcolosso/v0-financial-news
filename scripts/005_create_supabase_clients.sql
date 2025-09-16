@@ -1,0 +1,1 @@
+-- Import Supabase client utilities from examples
