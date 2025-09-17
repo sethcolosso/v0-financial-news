@@ -4,8 +4,12 @@ import { createClient } from "@/lib/supabase/server"
 
 export async function GET() {
   try {
+    console.log("[v0] Starting news fetch...")
+
     // Fetch news from external APIs
     const newsArticles = await fetchAllNews()
+
+    console.log("[v0] Fetched articles count:", newsArticles.length)
 
     if (newsArticles.length === 0) {
       return NextResponse.json({ articles: [], message: "No news available" })
@@ -42,6 +46,7 @@ export async function GET() {
       }
     }
 
+    console.log("[v0] Successfully processed news articles")
     return NextResponse.json({ articles: newsArticles })
   } catch (error) {
     console.error("Error in news API:", error)

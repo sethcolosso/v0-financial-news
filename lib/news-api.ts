@@ -17,10 +17,32 @@ export interface NewsArticle {
 // Alpha Vantage News API integration
 export async function fetchAlphaVantageNews(): Promise<NewsArticle[]> {
   try {
+    if (!process.env.ALPHA_VANTAGE_API_KEY) {
+      console.warn("Alpha Vantage API key not found, skipping Alpha Vantage news")
+      return []
+    }
+
     const response = await fetch(
       `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${process.env.ALPHA_VANTAGE_API_KEY}&limit=20`,
     )
+
+    if (!response.ok) {
+      console.error(`Alpha Vantage API error: ${response.status} ${response.statusText}`)
+      return []
+    }
+
+    const contentType = response.headers.get("content-type")
+    if (!contentType?.includes("application/json")) {
+      console.error("Alpha Vantage API returned non-JSON response")
+      return []
+    }
+
     const data = await response.json()
+
+    if (data.Error || data["Error Message"]) {
+      console.error("Alpha Vantage API error:", data.Error || data["Error Message"])
+      return []
+    }
 
     if (data.feed) {
       return data.feed.map((item: any, index: number) => ({
@@ -49,7 +71,18 @@ export async function fetchAlphaVantageNews(): Promise<NewsArticle[]> {
 export async function fetchYahooFinanceNews(): Promise<NewsArticle[]> {
   try {
     const response = await fetch("https://feeds.finance.yahoo.com/rss/2.0/headline")
+
+    if (!response.ok) {
+      console.error(`Yahoo Finance RSS error: ${response.status} ${response.statusText}`)
+      return []
+    }
+
     const text = await response.text()
+
+    if (text.includes("<!DOCTYPE") || text.includes("<html")) {
+      console.error("Yahoo Finance RSS returned HTML error page")
+      return []
+    }
 
     // Parse RSS feed (simplified - in production use a proper RSS parser)
     const items = text.match(/<item>[\s\S]*?<\/item>/g) || []
@@ -84,7 +117,18 @@ export async function fetchYahooFinanceNews(): Promise<NewsArticle[]> {
 export async function fetchCNBCNews(): Promise<NewsArticle[]> {
   try {
     const response = await fetch("https://www.cnbc.com/id/100003114/device/rss/rss.html")
+
+    if (!response.ok) {
+      console.error(`CNBC RSS error: ${response.status} ${response.statusText}`)
+      return []
+    }
+
     const text = await response.text()
+
+    if (text.includes("<!DOCTYPE") || text.includes("<html")) {
+      console.error("CNBC RSS returned HTML error page")
+      return []
+    }
 
     const items = text.match(/<item>[\s\S]*?<\/item>/g) || []
 

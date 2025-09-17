@@ -5,6 +5,10 @@ import { createServerClient } from "@/lib/supabase/server"
 
 export async function GET(request: NextRequest) {
   try {
+    if (!process.env.XAI_API_KEY) {
+      return Response.json({ error: "AI service not configured" }, { status: 500 })
+    }
+
     const supabase = createServerClient()
 
     const { data: articles, error } = await supabase
@@ -26,19 +30,7 @@ export async function GET(request: NextRequest) {
       model: xai("grok-4", {
         apiKey: process.env.XAI_API_KEY,
       }),
-      prompt: `Based on these recent financial news headlines from the last 24 hours, provide market insights:
-
-${articlesText}
-
-Please provide:
-1. Overall market sentiment
-2. Key themes and trends
-3. Sectors to watch
-4. Potential opportunities
-5. Risk factors
-6. Trading recommendations
-
-Keep it concise and actionable for traders and investors.`,
+      prompt: `Based on these recent financial news headlines from the last 24 hours, provide market insights:\n\n${articlesText}\n\nPlease provide:\n1. Overall market sentiment\n2. Key themes and trends\n3. Sectors to watch\n4. Potential opportunities\n5. Risk factors\n6. Trading recommendations\n\nKeep it concise and actionable for traders and investors.`,
       system:
         "You are a senior market analyst providing daily market insights based on news flow. Be objective and practical.",
     })
@@ -46,6 +38,6 @@ Keep it concise and actionable for traders and investors.`,
     return Response.json({ insights: result.text })
   } catch (error) {
     console.error("Error generating market insights:", error)
-    return new Response("Failed to generate insights", { status: 500 })
+    return Response.json({ error: "Failed to generate insights" }, { status: 500 })
   }
 }
