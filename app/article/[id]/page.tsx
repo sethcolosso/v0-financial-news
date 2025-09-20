@@ -4,7 +4,6 @@ import { ArticleContent } from "@/components/article-content"
 import { ArticleComments } from "@/components/article-comments"
 import { RelatedArticles } from "@/components/related-articles"
 import { ArticleActions } from "@/components/article-actions"
-import { AIArticleAnalysis } from "@/components/ai-article-analysis"
 
 interface ArticlePageProps {
   params: Promise<{ id: string }>
@@ -67,19 +66,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <main className="lg:col-span-3 space-y-6">
+          <main className="lg:col-span-3">
             <ArticleContent article={article} />
             <ArticleActions
               article={article}
               user={user}
               initialLiked={!!userLike}
               initialBookmarked={!!userBookmark}
-            />
-            <AIArticleAnalysis
-              articleId={id}
-              title={article.title}
-              content={article.content}
-              category={article.category}
             />
             <ArticleComments articleId={id} user={user} />
           </main>

@@ -2,7 +2,6 @@ import { NewsHeader } from "@/components/news-header"
 import { NewsFeed } from "@/components/news-feed"
 import { BreakingNews } from "@/components/breaking-news"
 import { TrendingSidebar } from "@/components/trending-sidebar"
-import { AIInsightsPanel } from "@/components/ai-insights-panel"
 
 export default function HomePage() {
   return (
@@ -14,8 +13,7 @@ export default function HomePage() {
           <main className="lg:col-span-3">
             <NewsFeed />
           </main>
-          <aside className="lg:col-span-1 space-y-6">
-            <AIInsightsPanel />
+          <aside className="lg:col-span-1">
             <TrendingSidebar />
           </aside>
         </div>
