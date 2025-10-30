@@ -4,7 +4,6 @@ import { AchievementsHeader } from "@/components/achievements-header"
 import { AchievementsList } from "@/components/achievements-list"
 import { DailyChallenges } from "@/components/daily-challenges"
 import { ProgressStats } from "@/components/progress-stats"
-
 export default async function AchievementsPage() {
   const supabase = await createClient()
 
@@ -16,8 +15,6 @@ export default async function AchievementsPage() {
   if (error || !user) {
     redirect("/auth/login")
   }
-
-  // Fetch user achievements
   const { data: userAchievements } = await supabase
     .from("user_achievements")
     .select(`
@@ -25,21 +22,13 @@ export default async function AchievementsPage() {
       achievements (*)
     `)
     .eq("user_id", user.id)
-
-  // Fetch all achievements
   const { data: allAchievements } = await supabase.from("achievements").select("*").eq("is_active", true)
-
-  // Fetch user points
   const { data: userPoints } = await supabase.from("user_points").select("*").eq("user_id", user.id).single()
-
-  // Fetch daily challenges
   const { data: dailyChallenges } = await supabase
     .from("daily_challenges")
     .select("*")
     .eq("date", new Date().toISOString().split("T")[0])
     .eq("is_active", true)
-
-  // Fetch user daily progress
   const { data: dailyProgress } = await supabase
     .from("user_daily_progress")
     .select("*")
