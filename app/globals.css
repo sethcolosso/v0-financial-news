@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
 @custom-variant dark (&:is(.dark *));
-
 :root {
   /* Updated color tokens for financial news theme */
   --background: #ffffff;
@@ -39,7 +37,6 @@
   --sidebar-border: #d1d5db;
   --sidebar-ring: rgba(20, 184, 166, 0.5);
 }
-
 .dark {
   /* Updated dark mode tokens for financial news theme */
   --background: #0f172a;
@@ -75,7 +72,6 @@
   --sidebar-border: #334155;
   --sidebar-ring: rgba(20, 184, 166, 0.5);
 }
-
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -116,7 +112,6 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
